@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- This file contains the build tasks and targets for verifying the manifest, zipping Release builds,
+     and copying the plugin to to your Beat Saber folder. Only edit this if you know what you are doing. -->
+<Project>
+    <PropertyGroup>
+        <BuildTargetsVersion>2.0</BuildTargetsVersion>
+        <!--Set this to true if you edit this file to prevent automatic updates-->
+        <BuildTargetsModified>false</BuildTargetsModified>
+        <!--Output assembly path without extension-->
+        <OutputAssemblyName>$(OutputPath)$(AssemblyName)</OutputAssemblyName>
+        <!--Path to folder to be zipped. Needs to be relative to the project directory to work without changes to the 'BuildForCI' target.-->
+        <ArtifactDestination>$(OutputPath)Final</ArtifactDestination>
+        <ErrorOnMismatchedVersions Condition="'$(Configuration)' == 'Release'">True</ErrorOnMismatchedVersions>
+    </PropertyGroup>
+
+    <!--Copies the assembly and pdb to the game folder.-->
+    <Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(DisableCopyToPlugins)' != 'True' AND '$(ContinuousIntegrationBuild)' != 'True'">
+        <PropertyGroup>
+            <CanCopyToPlugins>True</CanCopyToPlugins>
+            <CopyToPluginsError Condition="!Exists('$(PluginDir)')">Unable to copy assembly to game folder, did you set 'GamePath' correctly in your 'csproj.user' file? Plugins folder doesn't exist: '$(PluginDir)'.</CopyToPluginsError>
+            <CanCopyToPlugins Condition="'$(CopyToPluginsError)' != ''">False</CanCopyToPlugins>
+        </PropertyGroup>
+        <Warning Text="$(CopyToPluginsError)" Condition="'$(CopyToPluginsError)' != ''"/>
+        <Message Text="Copying '$(OutputAssemblyName).dll' to '$(PluginDir)'." Importance="high" Condition="$(CanCopyToPlugins)"/>
+        <Copy SourceFiles="$(OutputAssemblyName).dll" DestinationFiles="$(PluginDir)\$(AssemblyName).dll" Condition="$(CanCopyToPlugins)"/>
+        <Copy SourceFiles="$(OutputAssemblyName).pdb" DestinationFiles="$(PluginDir)\$(AssemblyName).pdb" Condition="'$(CanCopyToPlugins)' == 'True' AND Exists('$(OutputAssemblyName).pdb')"/>
+    </Target>
+</Project>
