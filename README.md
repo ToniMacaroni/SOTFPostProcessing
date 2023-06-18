@@ -2,6 +2,21 @@
  Change almost every post processing setting in Sons Of The Forest.  
  This mod also lets you enable Depth of Field.
 
+## Installation
+For BepInEx:
+1) Put the SOTFPostProcessing.dll in the `BepInEx/plugins` folder.
+
+For MelonLoader:
+1) Put the SOTFPostProcessing.dll in the `Mods` folder.
+
+## Usage
+1) Start the game
+2) Open the SOTFPostProcessing.cfg file in the BepInEx/config (or UserData for MelonLoader) folder
+3) Change the settings to your liking
+4) Save the file
+
+**Note: The post processing settings automatically reload once you save the file**
+
 ## TODO
 - Add custom sharpen solution
 
